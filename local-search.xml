@@ -4,6 +4,19 @@
   
   
   <entry>
+    <title>nvm常用命令切换node</title>
+    <link href="/2024/09/24/nvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%88%87%E6%8D%A2node/"/>
+    <url>/2024/09/24/nvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%88%87%E6%8D%A2node/</url>
+    
+    <content type="html"><![CDATA[<p>常用命令</p><p>nvm ls ：列出所有已安装的 node 版本</p><p>nvm ls-remote ：列出所有远程服务器的版本（官方node version list）</p><p>nvm list ：列出所有已安装的 node 版本</p><p>nvm list available ：显示所有可下载的版本</p><p>nvm install stable ：安装最新版 node</p><p>nvm install [node版本号] ：安装指定版本 node</p><p>nvm uninstall [node版本号] ：删除已安装的指定版本</p><p>nvm use [node版本号] ：切换到指定版本 node</p><p>nvm current ：当前 node 版本</p><p>nvm alias [别名] [node版本号] ：给不同的版本号添加别名</p><p>nvm unalias [别名] ：删除已定义的别名</p><p>nvm alias default [node版本号] ：设置默认版本</p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>测试文章</title>
     <link href="/2024/09/23/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/"/>
     <url>/2024/09/23/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0/</url>
