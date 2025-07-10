@@ -1,0 +1,797 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Richard">
+  <meta name="keywords" content="php python node.js golang">
+  
+    <meta name="description" content="🪲前言 在这篇博客中，我们将学习如何使用Python爬取豆瓣电影Top250的数据。我们将使用requests库来发送HTTP请求，BeautifulSoup库来解析HTML页面，并将数据存储到CSV文件中。这个爬虫将自动获取豆瓣电影Top250页面的信息，包括电影名称、导演、主演、评分等详细信息  豆瓣电影Top250是一个包含豆瓣评分最高的250部电影的榜单，是电影爱好者查找电影的一大宝库。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Python爬虫五十个小案例】爬取豆瓣电影Top250">
+<meta property="og:url" content="http://example.com/2025/07/09/%E3%80%90Python%E7%88%AC%E8%99%AB%E4%BA%94%E5%8D%81%E4%B8%AA%E5%B0%8F%E6%A1%88%E4%BE%8B%E3%80%91%E7%88%AC%E5%8F%96%E8%B1%86%E7%93%A3%E7%94%B5%E5%BD%B1Top250/index.html">
+<meta property="og:site_name" content="Richard">
+<meta property="og:description" content="🪲前言 在这篇博客中，我们将学习如何使用Python爬取豆瓣电影Top250的数据。我们将使用requests库来发送HTTP请求，BeautifulSoup库来解析HTML页面，并将数据存储到CSV文件中。这个爬虫将自动获取豆瓣电影Top250页面的信息，包括电影名称、导演、主演、评分等详细信息  豆瓣电影Top250是一个包含豆瓣评分最高的250部电影的榜单，是电影爱好者查找电影的一大宝库。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/Richard-jun/hexoImage/raw/main/Qexo/25/7/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17521379288044_57ddac684a94e987f1755eecd0961132.png">
+<meta property="og:image" content="https://github.com/Richard-jun/hexoImage/raw/main/Qexo/25/7/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17521380036822_2b9977d7d1cf61163459c0a47c81437f.png">
+<meta property="article:published_time" content="2025-07-09T02:50:51.623Z">
+<meta property="article:modified_time" content="2025-07-10T00:59:28.317Z">
+<meta property="article:author" content="Richard">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/Richard-jun/hexoImage/raw/main/Qexo/25/7/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17521379288044_57ddac684a94e987f1755eecd0961132.png">
+  
+  
+  
+  <title>【Python爬虫五十个小案例】爬取豆瓣电影Top250 - Richard</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":"Hpo870nlMZtizgeQ7yQLChLe-MdYXbMMI","app_key":"G7T2N2wMe8nJPQe1wNBswGSH","server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Richard</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="【Python爬虫五十个小案例】爬取豆瓣电影Top250"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-09 10:50" pubdate>
+          2025年7月9日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="leancloud-page-views-container" class="post-meta" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="leancloud-page-views"></span> 次
+        </span>
+        
+      
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">【Python爬虫五十个小案例】爬取豆瓣电影Top250</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="🪲前言"><a href="#🪲前言" class="headerlink" title="🪲前言"></a>🪲前言</h2><blockquote>
+<p>在这篇博客中，我们将学习如何使用Python爬取豆瓣电影Top250的数据。我们将使用<code>requests</code>库来发送HTTP请求，<code>BeautifulSoup</code>库来解析HTML页面，并将<a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/cos?from_column=20065&from=20065">数据存储</a>到CSV文件中。这个爬虫将自动获取豆瓣电影Top250页面的信息，包括电影名称、导演、主演、评分等详细信息</p>
+</blockquote>
+<p>豆瓣电影Top250是一个包含豆瓣评分最高的250部电影的榜单，是电影爱好者查找电影的一大宝库。本博客将指导大家如何通过编写Python爬虫自动获取豆瓣电影Top250的数据</p>
+<h2 id="🪲环境准备"><a href="#🪲环境准备" class="headerlink" title="🪲环境准备"></a>🪲环境准备</h2><p>首先，我们需要安装一些Python库来完成本次任务。以下是我们将使用的库：</p>
+<ul>
+<li><code>requests</code>：用来发送HTTP请求并获取网页内容。</li>
+<li><code>BeautifulSoup</code>：用来解析HTML页面，提取我们需要的数据。</li>
+<li><code>csv</code>：将爬取的数据保存到CSV文件中。</li>
+</ul>
+<p>因为我们使用的是Python进行爬虫，所以我们使用的命令行是</p>
+<p><code>pip install  requests beautifulsoup4 csv</code></p>
+<h2 id="🪲爬虫原理与分析"><a href="#🪲爬虫原理与分析" class="headerlink" title="🪲爬虫原理与分析"></a>🪲爬虫原理与分析</h2><p>豆瓣电影Top250的URL是 <code>https://movie.douban.com/top250</code>。页面内容是分页显示的，每一页展示25部电影，最多5页。我们需要访问这些页面并提取电影数据</p>
+<p><strong>数据结构</strong>分析</p>
+<p>每一部电影的信息在HTML结构中都有相应的标签，我们需要从中提取出以下信息：</p>
+<ul>
+<li>电影名称</li>
+<li>电影评分</li>
+<li>电影导演</li>
+<li>电影主演</li>
+<li>电影年份</li>
+<li>电影类型</li>
+</ul>
+<p>通过使用<code>BeautifulSoup</code>解析HTML，我们可以轻松提取这些信息</p>
+<h2 id="🪲代码具体的实现"><a href="#🪲代码具体的实现" class="headerlink" title="🪲代码具体的实现"></a>🪲代码具体的实现</h2><h3 id="发送请求获取网页内容"><a href="#发送请求获取网页内容" class="headerlink" title="发送请求获取网页内容"></a>发送请求获取网页内容</h3><p>我们首先使用<code>requests</code>库发送请求来获取网页内容。豆瓣会返回HTML页面，我们将把这些内容传递给<code>BeautifulSoup</code>进行解析</p>
+<p><strong>代码语言：</strong>python</p>
+<p><strong>代码</strong>运行次数：14</p>
+<p><strong>运行</strong></p>
+<p>AI代码解释</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">from</span> bs4 <span class="hljs-keyword">import</span> BeautifulSoup<br><br><span class="hljs-comment"># 设置请求头，避免被豆瓣屏蔽</span><br>headers = &#123;<br>    <span class="hljs-string">&#x27;User-Agent&#x27;</span>: <span class="hljs-string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36&#x27;</span><br>&#125;<br><br><span class="hljs-comment"># 获取豆瓣电影Top250的前五页数据</span><br>base_url = <span class="hljs-string">&quot;https://movie.douban.com/top250&quot;</span><br>movie_list = []<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_page</span>(<span class="hljs-params">url</span>):<br>    response = requests.get(url, headers=headers)<br>    <span class="hljs-keyword">return</span> response.text<br></code></pre></td></tr></table></figure>
+
+<h3 id="解析网页内容"><a href="#解析网页内容" class="headerlink" title="解析网页内容"></a>解析网页内容</h3><p>使用<code>BeautifulSoup</code>解析HTML页面，找到每部电影的信息。每部电影的信息包含在<code>div</code>标签中，类名为<code>item</code></p>
+<p><strong>代码语言：</strong>python</p>
+<p><strong>代码</strong>运行次数：2</p>
+<p><strong>运行</strong></p>
+<p>AI代码解释</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">parse_page</span>(<span class="hljs-params">html</span>):<br>    soup = BeautifulSoup(html, <span class="hljs-string">&#x27;html.parser&#x27;</span>)<br>    movies = soup.find_all(<span class="hljs-string">&#x27;div&#x27;</span>, class_=<span class="hljs-string">&#x27;item&#x27;</span>)<br><br>    <span class="hljs-keyword">for</span> movie <span class="hljs-keyword">in</span> movies:<br>        title = movie.find(<span class="hljs-string">&#x27;span&#x27;</span>, class_=<span class="hljs-string">&#x27;title&#x27;</span>).text<br>        rating = movie.find(<span class="hljs-string">&#x27;span&#x27;</span>, class_=<span class="hljs-string">&#x27;rating_num&#x27;</span>).text<br>        director, actors = movie.find(<span class="hljs-string">&#x27;div&#x27;</span>, class_=<span class="hljs-string">&#x27;bd&#x27;</span>).find(<span class="hljs-string">&#x27;p&#x27;</span>).text.strip().split(<span class="hljs-string">&quot;\n&quot;</span>)[:<span class="hljs-number">2</span>]<br>        year = movie.find(<span class="hljs-string">&#x27;div&#x27;</span>, class_=<span class="hljs-string">&#x27;bd&#x27;</span>).find(<span class="hljs-string">&#x27;p&#x27;</span>).text.strip().split(<span class="hljs-string">&quot;\n&quot;</span>)[<span class="hljs-number">0</span>]<br>        movie_type = movie.find(<span class="hljs-string">&#x27;span&#x27;</span>, class_=<span class="hljs-string">&#x27;genre&#x27;</span>).text.strip()<br>    <br>        movie_info = &#123;<br>            <span class="hljs-string">&#x27;title&#x27;</span>: title,<br>            <span class="hljs-string">&#x27;rating&#x27;</span>: rating,<br>            <span class="hljs-string">&#x27;director&#x27;</span>: director,<br>            <span class="hljs-string">&#x27;actors&#x27;</span>: actors,<br>            <span class="hljs-string">&#x27;year&#x27;</span>: year,<br>            <span class="hljs-string">&#x27;type&#x27;</span>: movie_type<br>        &#125;<br>    <br>        movie_list.append(movie_info)<br></code></pre></td></tr></table></figure>
+
+<h3 id="提取电影数据"><a href="#提取电影数据" class="headerlink" title="提取电影数据"></a>提取电影数据</h3><p>我们现在可以循环访问每一页的URL并提取数据。豆瓣电影Top250有5页，URL结构为<code>https://movie.douban.com/top250?start=X</code>，其中<code>X</code>为每页的起始索引（0, 25, 50, …）</p>
+<p>接下来我们的其他案例也会采取类似的分析方式，同学们可以</p>
+<p><strong>代码语言：</strong>Python</p>
+<p>AI代码解释</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    <span class="hljs-keyword">for</span> start <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-number">250</span>, <span class="hljs-number">25</span>):<br>        url = <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;base_url&#125;</span>?start=<span class="hljs-subst">&#123;start&#125;</span>&quot;</span><br>        html = get_page(url)<br>        parse_page(html)<br><br>    <span class="hljs-comment"># 输出结果</span><br>    <span class="hljs-keyword">for</span> movie <span class="hljs-keyword">in</span> movie_list:<br>        <span class="hljs-built_in">print</span>(movie)<br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    main()<br></code></pre></td></tr></table></figure>
+
+<h3 id="保存数据到CSV文件或者Excel文件"><a href="#保存数据到CSV文件或者Excel文件" class="headerlink" title="保存数据到CSV文件或者Excel文件"></a>保存数据到CSV文件或者Excel文件</h3><p>为了方便后续的<a target="_blank" rel="noopener" href="https://cloud.tencent.com/product/bi?from_column=20065&from=20065">数据分析</a>，我们可以将数据保存到CSV文件中</p>
+<p><strong>代码语言：</strong>Python</p>
+<p>AI代码解释</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> csv<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">save_to_csv</span>():<br>    keys = movie_list[<span class="hljs-number">0</span>].keys()<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;douban_top250.csv&#x27;</span>, <span class="hljs-string">&#x27;w&#x27;</span>, newline=<span class="hljs-string">&#x27;&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8&#x27;</span>) <span class="hljs-keyword">as</span> output_file:<br>        dict_writer = csv.DictWriter(output_file, fieldnames=keys)<br>        dict_writer.writeheader()<br>        dict_writer.writerows(movie_list)<br><br>save_to_csv()<br></code></pre></td></tr></table></figure>
+
+<p>如果是Excel那么可以参考下面的案例代码</p>
+<p><strong>代码语言：</strong>python</p>
+<p><strong>代码</strong>运行次数：0</p>
+<p><strong>运行</strong></p>
+<p>AI代码解释</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd  <span class="hljs-comment"># 导入pandas库</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">save_to_excel</span>():<br>    df = pd.DataFrame(movie_list)  <span class="hljs-comment"># 将电影列表转换为DataFrame</span><br>    df.to_excel(<span class="hljs-string">&#x27;douban_top250.xlsx&#x27;</span>, index=<span class="hljs-literal">False</span>, engine=<span class="hljs-string">&#x27;openpyxl&#x27;</span>)  <span class="hljs-comment"># 保存为Excel文件</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="🪲完整的代码"><a href="#🪲完整的代码" class="headerlink" title="🪲完整的代码"></a>🪲完整的代码</h2><p><strong>代码语言：</strong>python</p>
+<p><strong>代码</strong>运行次数：57</p>
+<p><strong>运行</strong></p>
+<p>AI代码解释</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> csv<br><br><span class="hljs-keyword">import</span> requests<br><span class="hljs-keyword">from</span> bs4 <span class="hljs-keyword">import</span> BeautifulSoup<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd  <span class="hljs-comment"># 导入pandas库</span><br><br><span class="hljs-comment"># 设置请求头，避免被豆瓣屏蔽</span><br>headers = &#123;<br>    <span class="hljs-string">&#x27;User-Agent&#x27;</span>: <span class="hljs-string">&#x27;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36&#x27;</span><br>&#125;<br><br><span class="hljs-comment"># 获取豆瓣电影Top250的前五页数据</span><br>base_url = <span class="hljs-string">&quot;https://movie.douban.com/top250&quot;</span><br>movie_list = []<br><br><br><span class="hljs-comment"># 发送请求获取网页内容</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_page</span>(<span class="hljs-params">url</span>):<br>    response = requests.get(url, headers=headers)<br>    <span class="hljs-keyword">return</span> response.text<br><br><br><span class="hljs-comment"># 解析网页内容并提取电影信息</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">parse_page</span>(<span class="hljs-params">html</span>):<br>    soup = BeautifulSoup(html, <span class="hljs-string">&#x27;html.parser&#x27;</span>)<br>    movies = soup.find_all(<span class="hljs-string">&#x27;div&#x27;</span>, class_=<span class="hljs-string">&#x27;item&#x27;</span>)<br><br>    <span class="hljs-keyword">for</span> movie <span class="hljs-keyword">in</span> movies:<br>        title = movie.find(<span class="hljs-string">&#x27;span&#x27;</span>, class_=<span class="hljs-string">&#x27;title&#x27;</span>).text<br>        rating = movie.find(<span class="hljs-string">&#x27;span&#x27;</span>, class_=<span class="hljs-string">&#x27;rating_num&#x27;</span>).text<br>        director_actors = movie.find(<span class="hljs-string">&#x27;div&#x27;</span>, class_=<span class="hljs-string">&#x27;bd&#x27;</span>).find(<span class="hljs-string">&#x27;p&#x27;</span>).text.strip().split(<span class="hljs-string">&quot;\n&quot;</span>)[:<span class="hljs-number">2</span>]<br>        director = director_actors[<span class="hljs-number">0</span>]<br>        actors = director_actors[<span class="hljs-number">1</span>] <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(director_actors) &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;&#x27;</span><br><br>        <span class="hljs-comment"># 处理电影类型，避免找不到的情况</span><br>        genre_tag = movie.find(<span class="hljs-string">&#x27;span&#x27;</span>, class_=<span class="hljs-string">&#x27;genre&#x27;</span>)<br>        movie_type = genre_tag.text.strip() <span class="hljs-keyword">if</span> genre_tag <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;未知&#x27;</span><br><br>        <span class="hljs-comment"># 处理电影年份</span><br>        year_tag = movie.find(<span class="hljs-string">&#x27;div&#x27;</span>, class_=<span class="hljs-string">&#x27;bd&#x27;</span>).find(<span class="hljs-string">&#x27;p&#x27;</span>).text.strip().split(<span class="hljs-string">&quot;\n&quot;</span>)[<span class="hljs-number">0</span>]<br><br>        <span class="hljs-comment"># 构建电影信息字典</span><br>        movie_info = &#123;<br>            <span class="hljs-string">&#x27;title&#x27;</span>: title,<br>            <span class="hljs-string">&#x27;rating&#x27;</span>: rating,<br>            <span class="hljs-string">&#x27;director&#x27;</span>: director,<br>            <span class="hljs-string">&#x27;actors&#x27;</span>: actors,<br>            <span class="hljs-string">&#x27;year&#x27;</span>: year_tag,<br>            <span class="hljs-string">&#x27;type&#x27;</span>: movie_type<br>        &#125;<br><br>        <span class="hljs-comment"># 将电影信息添加到列表中</span><br>        movie_list.append(movie_info)<br><br><br><span class="hljs-comment"># 爬取豆瓣电影Top250的所有页面</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">main</span>():<br>    <span class="hljs-comment"># 遍历前5页的豆瓣Top250</span><br>    <span class="hljs-keyword">for</span> start <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-number">250</span>, <span class="hljs-number">25</span>):<br>        url = <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;base_url&#125;</span>?start=<span class="hljs-subst">&#123;start&#125;</span>&quot;</span><br>        html = get_page(url)<br>        parse_page(html)<br><br>    <span class="hljs-comment"># 输出结果</span><br>    <span class="hljs-keyword">for</span> movie <span class="hljs-keyword">in</span> movie_list:<br>        <span class="hljs-built_in">print</span>(movie)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">save_to_csv</span>():<br>    keys = movie_list[<span class="hljs-number">0</span>].keys()  <span class="hljs-comment"># 获取电影数据字典的键（即列名）</span><br><br>    <span class="hljs-comment"># 写入CSV文件</span><br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&#x27;douban_top250.csv&#x27;</span>, <span class="hljs-string">&#x27;w&#x27;</span>, newline=<span class="hljs-string">&#x27;&#x27;</span>, encoding=<span class="hljs-string">&#x27;utf-8-sig&#x27;</span>) <span class="hljs-keyword">as</span> output_file:<br>        dict_writer = csv.DictWriter(output_file, fieldnames=keys)<br>        dict_writer.writeheader()  <span class="hljs-comment"># 写入列名</span><br>        dict_writer.writerows(movie_list)  <span class="hljs-comment"># 写入电影数据</span><br><br><br><span class="hljs-comment"># 主函数</span><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    main()<br>    save_to_csv()<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;爬取完成，数据已保存到 douban_top250.csv&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="🪲运行效果"><a href="#🪲运行效果" class="headerlink" title="🪲运行效果"></a>🪲运行效果</h2><p>运行上述代码后，你将会得到一个名为<code>douban_top250.csv</code>的文件，文件内容如下所示：</p>
+<p><img src="https://github.com/Richard-jun/hexoImage/raw/main/Qexo/25/7/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17521379288044_57ddac684a94e987f1755eecd0961132.png" srcset="/img/loading.gif" lazyload></p>
+<p>下图是保存为csv文件的格式，这里注意encoding&#x3D;’utf-8-sig’，encoding如果等于utf-8，那么直接双击csv文件会乱码的</p>
+<p><img src="https://github.com/Richard-jun/hexoImage/raw/main/Qexo/25/7/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_17521380036822_2b9977d7d1cf61163459c0a47c81437f.png" srcset="/img/loading.gif" lazyload></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/python/" class="category-chain-item">python</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/python/" class="print-no-link">#python</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>【Python爬虫五十个小案例】爬取豆瓣电影Top250</div>
+      <div>http://example.com/2025/07/09/【Python爬虫五十个小案例】爬取豆瓣电影Top250/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Richard</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/09/Github%20Action%E8%87%AA%E5%8A%A8%E5%8C%96%E9%83%A8%E7%BD%B2Hexo%E5%8D%9A%E5%AE%A2%E5%92%8CQexo%E7%AE%A1%E7%90%86%E5%90%8E%E5%8F%B0/" title="Github Action自动化部署Hexo博客和Qexo管理后台">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Github Action自动化部署Hexo博客和Qexo管理后台</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/09/24/nvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E5%88%87%E6%8D%A2node/" title="nvm常用命令切换node">
+                        <span class="hidden-mobile">nvm常用命令切换node</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <div id="valine"></div>
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#valine', function() {
+      Fluid.utils.createScript('https://lib.baomitu.com/valine/1.5.1/Valine.min.js', function() {
+        var options = Object.assign(
+          {"appId":"Hpo870nlMZtizgeQ7yQLChLe-MdYXbMMI","appKey":"G7T2N2wMe8nJPQe1wNBswGSH","path":"window.location.pathname","placeholder":"评论一下","avatar":"retro","meta":["nick","mail","link"],"requiredFields":[],"pageSize":10,"lang":"zh-CN","highlight":false,"recordIP":false,"serverURLs":"https://hpo870nl.api.lncldglobal.com","emojiCDN":null,"emojiMaps":null,"enableQQ":false},
+          {
+            el: "#valine",
+            path: window.location.pathname
+          }
+        )
+        new Valine(options);
+        Fluid.utils.waitElementVisible('#valine .vcontent', () => {
+          var imgSelector = '#valine .vcontent img:not(.vemoji)';
+          Fluid.plugins.imageCaption(imgSelector);
+          Fluid.plugins.fancyBox(imgSelector);
+        })
+      });
+    });
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Richard</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="leancloud-site-pv-container" style="display: none">
+        总访问量 
+        <span id="leancloud-site-pv"></span>
+         次
+      </span>
+    
+    
+      <span id="leancloud-site-uv-container" style="display: none">
+        总访客数 
+        <span id="leancloud-site-uv"></span>
+         人
+      </span>
+    
+    
+
+  
+
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script defer src="/js/leancloud.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
